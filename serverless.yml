@@ -12,6 +12,8 @@ provider:
   stage: ${opt:stage, 'dev'}
   environment:
     STUDENT_PROFILES_TABLE: ${self:custom.studentProfilesTableName}
+    RESUMES_TABLE: ${self:custom.resumesTableName}
+    RESUMES_BUCKET: ${self:custom.resumesBucketName}
     COGNITO_USER_POOL_ID: ${env:COGNITO_USER_POOL_ID, ''}
     COGNITO_CLIENT_ID: ${env:COGNITO_CLIENT_ID, ''}
   iam:
@@ -27,9 +29,31 @@ provider:
             - dynamodb:Scan
           Resource:
             - !GetAtt StudentProfilesTable.Arn
+        - Effect: Allow
+          Action:
+            - dynamodb:GetItem
+            - dynamodb:PutItem
+            - dynamodb:UpdateItem
+            - dynamodb:Query
+          Resource:
+            - !GetAtt ResumesTable.Arn
+        - Effect: Allow
+          Action:
+            - s3:PutObject
+            - s3:GetObject
+            - s3:HeadObject
+          Resource:
+            - !Sub
+                - "arn:aws:s3:::${BucketName}/*"
+                - BucketName: !Ref ResumesBucket
 
 custom:
+  dotenv:
+    exclude:
+      - AWS_REGION
   studentProfilesTableName: StudentProfiles-${self:provider.stage}
+  resumesTableName: Resumes-${self:provider.stage}
+  resumesBucketName: tamu-resumes-${self:provider.stage}-${aws:accountId}
   cors:
     origin: "*"
     headers:
@@ -69,6 +93,39 @@ functions:
           cors: ${self:custom.cors}
     # JWT verification performed in handler (Cognito token in Authorization header)
 
+  # Resume upload via S3 presigned URL
+  resumesUploadUrl:
+    handler: src/handlers/resumes.uploadUrl
+    events:
+      - http:
+          path: api/resumes/upload-url
+          method: post
+          cors: ${self:custom.cors}
+
+  resumesComplete:
+    handler: src/handlers/resumes.complete
+    events:
+      - http:
+          path: api/resumes/complete
+          method: post
+          cors: ${self:custom.cors}
+
+  resumesList:
+    handler: src/handlers/resumes.list
+    events:
+      - http:
+          path: api/resumes/me
+          method: get
+          cors: ${self:custom.cors}
+
+  resumesDownloadUrl:
+    handler: src/handlers/resumes.downloadUrl
+    events:
+      - http:
+          path: api/resumes/{resumeId}/download-url
+          method: get
+          cors: ${self:custom.cors}
+
 resources:
   Resources:
     StudentProfilesTable:
@@ -88,3 +145,56 @@ resources:
             Value: TeamReveille
           - Key: Component
             Value: StudentProfiles
+
+    ResumesTable:
+      Type: AWS::DynamoDB::Table
+      DeletionPolicy: Retain
+      Properties:
+        TableName: ${self:custom.resumesTableName}
+        BillingMode: PAY_PER_REQUEST
+        AttributeDefinitions:
+          - AttributeName: userSub
+            AttributeType: S
+          - AttributeName: resumeId
+            AttributeType: S
+        KeySchema:
+          - AttributeName: userSub
+            KeyType: HASH
+          - AttributeName: resumeId
+            KeyType: RANGE
+        Tags:
+          - Key: Project
+            Value: TeamReveille
+          - Key: Component
+            Value: Resumes
+
+    ResumesBucket:
+      Type: AWS::S3::Bucket
+      DeletionPolicy: Retain
+      Properties:
+        BucketName: ${self:custom.resumesBucketName}
+        BucketEncryption:
+          ServerSideEncryptionConfiguration:
+            - ServerSideEncryptionByDefault:
+                SSEAlgorithm: AES256
+        PublicAccessBlockConfiguration:
+          BlockPublicAcls: true
+          BlockPublicPolicy: true
+          IgnorePublicAcls: true
+          RestrictPublicBuckets: true
+        CorsConfiguration:
+          CorsRules:
+            - AllowedHeaders:
+                - "*"
+              AllowedMethods:
+                - PUT
+                - HEAD
+              AllowedOrigins:
+                - "*"
+              ExposedHeaders:
+                - ETag
+        Tags:
+          - Key: Project
+            Value: TeamReveille
+          - Key: Component
+            Value: Resumes

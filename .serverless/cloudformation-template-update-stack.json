@@ -83,6 +83,30 @@
         "LogGroupName": "/aws/lambda/team-reveille-student-core-dev-studentProfilesCrud"
       }
     },
+    "ResumesUploadUrlLogGroup": {
+      "Type": "AWS::Logs::LogGroup",
+      "Properties": {
+        "LogGroupName": "/aws/lambda/team-reveille-student-core-dev-resumesUploadUrl"
+      }
+    },
+    "ResumesCompleteLogGroup": {
+      "Type": "AWS::Logs::LogGroup",
+      "Properties": {
+        "LogGroupName": "/aws/lambda/team-reveille-student-core-dev-resumesComplete"
+      }
+    },
+    "ResumesListLogGroup": {
+      "Type": "AWS::Logs::LogGroup",
+      "Properties": {
+        "LogGroupName": "/aws/lambda/team-reveille-student-core-dev-resumesList"
+      }
+    },
+    "ResumesDownloadUrlLogGroup": {
+      "Type": "AWS::Logs::LogGroup",
+      "Properties": {
+        "LogGroupName": "/aws/lambda/team-reveille-student-core-dev-resumesDownloadUrl"
+      }
+    },
     "IamRoleLambdaExecution": {
       "Type": "AWS::IAM::Role",
       "Properties": {
@@ -159,6 +183,43 @@
                       ]
                     }
                   ]
+                },
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "dynamodb:GetItem",
+                    "dynamodb:PutItem",
+                    "dynamodb:UpdateItem",
+                    "dynamodb:Query"
+                  ],
+                  "Resource": [
+                    {
+                      "Fn::GetAtt": [
+                        "ResumesTable",
+                        "Arn"
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "s3:PutObject",
+                    "s3:GetObject",
+                    "s3:HeadObject"
+                  ],
+                  "Resource": [
+                    {
+                      "Fn::Sub": [
+                        "arn:aws:s3:::${BucketName}/*",
+                        {
+                          "BucketName": {
+                            "Ref": "ResumesBucket"
+                          }
+                        }
+                      ]
+                    }
+                  ]
                 }
               ]
             }
@@ -187,7 +248,7 @@
           "S3Bucket": {
             "Ref": "ServerlessDeploymentBucket"
           },
-          "S3Key": "serverless/team-reveille-student-core/dev/1771129541728-2026-02-15T04:25:41.728Z/team-reveille-student-core.zip"
+          "S3Key": "serverless/team-reveille-student-core/dev/1771138129221-2026-02-15T06:48:49.221Z/team-reveille-student-core.zip"
         },
         "Handler": "src/handlers/studentProfiles.checkProfileExists",
         "Runtime": "nodejs20.x",
@@ -197,6 +258,8 @@
         "Environment": {
           "Variables": {
             "STUDENT_PROFILES_TABLE": "StudentProfiles-dev",
+            "RESUMES_TABLE": "Resumes-dev",
+            "RESUMES_BUCKET": "tamu-resumes-dev-818189472529",
             "COGNITO_USER_POOL_ID": "us-east-1_IAn2LeHKV",
             "COGNITO_CLIENT_ID": "3cm0701i1fs4amdprnub5bdekm"
           }
@@ -219,7 +282,7 @@
           "S3Bucket": {
             "Ref": "ServerlessDeploymentBucket"
           },
-          "S3Key": "serverless/team-reveille-student-core/dev/1771129541728-2026-02-15T04:25:41.728Z/team-reveille-student-core.zip"
+          "S3Key": "serverless/team-reveille-student-core/dev/1771138129221-2026-02-15T06:48:49.221Z/team-reveille-student-core.zip"
         },
         "Handler": "src/handlers/studentProfiles.crud",
         "Runtime": "nodejs20.x",
@@ -229,6 +292,8 @@
         "Environment": {
           "Variables": {
             "STUDENT_PROFILES_TABLE": "StudentProfiles-dev",
+            "RESUMES_TABLE": "Resumes-dev",
+            "RESUMES_BUCKET": "tamu-resumes-dev-818189472529",
             "COGNITO_USER_POOL_ID": "us-east-1_IAn2LeHKV",
             "COGNITO_CLIENT_ID": "3cm0701i1fs4amdprnub5bdekm"
           }
@@ -244,24 +309,200 @@
         "StudentProfilesCrudLogGroup"
       ]
     },
-    "StudentProfilesCheckProfileExistsLambdaVersionnuhZPjgzXJPNm5HGoLnf7Q5c2AdsAi42DTFJ6BjoetA": {
+    "ResumesUploadUrlLambdaFunction": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "Code": {
+          "S3Bucket": {
+            "Ref": "ServerlessDeploymentBucket"
+          },
+          "S3Key": "serverless/team-reveille-student-core/dev/1771138129221-2026-02-15T06:48:49.221Z/team-reveille-student-core.zip"
+        },
+        "Handler": "src/handlers/resumes.uploadUrl",
+        "Runtime": "nodejs20.x",
+        "FunctionName": "team-reveille-student-core-dev-resumesUploadUrl",
+        "MemorySize": 1024,
+        "Timeout": 6,
+        "Environment": {
+          "Variables": {
+            "STUDENT_PROFILES_TABLE": "StudentProfiles-dev",
+            "RESUMES_TABLE": "Resumes-dev",
+            "RESUMES_BUCKET": "tamu-resumes-dev-818189472529",
+            "COGNITO_USER_POOL_ID": "us-east-1_IAn2LeHKV",
+            "COGNITO_CLIENT_ID": "3cm0701i1fs4amdprnub5bdekm"
+          }
+        },
+        "Role": {
+          "Fn::GetAtt": [
+            "IamRoleLambdaExecution",
+            "Arn"
+          ]
+        }
+      },
+      "DependsOn": [
+        "ResumesUploadUrlLogGroup"
+      ]
+    },
+    "ResumesCompleteLambdaFunction": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "Code": {
+          "S3Bucket": {
+            "Ref": "ServerlessDeploymentBucket"
+          },
+          "S3Key": "serverless/team-reveille-student-core/dev/1771138129221-2026-02-15T06:48:49.221Z/team-reveille-student-core.zip"
+        },
+        "Handler": "src/handlers/resumes.complete",
+        "Runtime": "nodejs20.x",
+        "FunctionName": "team-reveille-student-core-dev-resumesComplete",
+        "MemorySize": 1024,
+        "Timeout": 6,
+        "Environment": {
+          "Variables": {
+            "STUDENT_PROFILES_TABLE": "StudentProfiles-dev",
+            "RESUMES_TABLE": "Resumes-dev",
+            "RESUMES_BUCKET": "tamu-resumes-dev-818189472529",
+            "COGNITO_USER_POOL_ID": "us-east-1_IAn2LeHKV",
+            "COGNITO_CLIENT_ID": "3cm0701i1fs4amdprnub5bdekm"
+          }
+        },
+        "Role": {
+          "Fn::GetAtt": [
+            "IamRoleLambdaExecution",
+            "Arn"
+          ]
+        }
+      },
+      "DependsOn": [
+        "ResumesCompleteLogGroup"
+      ]
+    },
+    "ResumesListLambdaFunction": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "Code": {
+          "S3Bucket": {
+            "Ref": "ServerlessDeploymentBucket"
+          },
+          "S3Key": "serverless/team-reveille-student-core/dev/1771138129221-2026-02-15T06:48:49.221Z/team-reveille-student-core.zip"
+        },
+        "Handler": "src/handlers/resumes.list",
+        "Runtime": "nodejs20.x",
+        "FunctionName": "team-reveille-student-core-dev-resumesList",
+        "MemorySize": 1024,
+        "Timeout": 6,
+        "Environment": {
+          "Variables": {
+            "STUDENT_PROFILES_TABLE": "StudentProfiles-dev",
+            "RESUMES_TABLE": "Resumes-dev",
+            "RESUMES_BUCKET": "tamu-resumes-dev-818189472529",
+            "COGNITO_USER_POOL_ID": "us-east-1_IAn2LeHKV",
+            "COGNITO_CLIENT_ID": "3cm0701i1fs4amdprnub5bdekm"
+          }
+        },
+        "Role": {
+          "Fn::GetAtt": [
+            "IamRoleLambdaExecution",
+            "Arn"
+          ]
+        }
+      },
+      "DependsOn": [
+        "ResumesListLogGroup"
+      ]
+    },
+    "ResumesDownloadUrlLambdaFunction": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "Code": {
+          "S3Bucket": {
+            "Ref": "ServerlessDeploymentBucket"
+          },
+          "S3Key": "serverless/team-reveille-student-core/dev/1771138129221-2026-02-15T06:48:49.221Z/team-reveille-student-core.zip"
+        },
+        "Handler": "src/handlers/resumes.downloadUrl",
+        "Runtime": "nodejs20.x",
+        "FunctionName": "team-reveille-student-core-dev-resumesDownloadUrl",
+        "MemorySize": 1024,
+        "Timeout": 6,
+        "Environment": {
+          "Variables": {
+            "STUDENT_PROFILES_TABLE": "StudentProfiles-dev",
+            "RESUMES_TABLE": "Resumes-dev",
+            "RESUMES_BUCKET": "tamu-resumes-dev-818189472529",
+            "COGNITO_USER_POOL_ID": "us-east-1_IAn2LeHKV",
+            "COGNITO_CLIENT_ID": "3cm0701i1fs4amdprnub5bdekm"
+          }
+        },
+        "Role": {
+          "Fn::GetAtt": [
+            "IamRoleLambdaExecution",
+            "Arn"
+          ]
+        }
+      },
+      "DependsOn": [
+        "ResumesDownloadUrlLogGroup"
+      ]
+    },
+    "StudentProfilesCheckProfileExistsLambdaVersionTS20zgukA9Cb8F48YwQVe1aMHGqrBmovIw2EtD5A": {
       "Type": "AWS::Lambda::Version",
       "DeletionPolicy": "Retain",
       "Properties": {
         "FunctionName": {
           "Ref": "StudentProfilesCheckProfileExistsLambdaFunction"
         },
-        "CodeSha256": "rDX3L9O9kCkNkXY45JjLoVnME4/qKtqFPcxpQU7WvMc="
+        "CodeSha256": "X5rDO+dNuqBPoCRtkkk7Sl8BOrP/A3yyISNx9jaHkQI="
       }
     },
-    "StudentProfilesCrudLambdaVersionuzFB8cf8OfVlAkxBZjuAqo8cCyALMNMmHbA4wyhI8": {
+    "StudentProfilesCrudLambdaVersion2DLtCXrEvn5QvLPmzUSda5YMiblxj87PJPZI0Q9BlY": {
       "Type": "AWS::Lambda::Version",
       "DeletionPolicy": "Retain",
       "Properties": {
         "FunctionName": {
           "Ref": "StudentProfilesCrudLambdaFunction"
         },
-        "CodeSha256": "rDX3L9O9kCkNkXY45JjLoVnME4/qKtqFPcxpQU7WvMc="
+        "CodeSha256": "X5rDO+dNuqBPoCRtkkk7Sl8BOrP/A3yyISNx9jaHkQI="
+      }
+    },
+    "ResumesUploadUrlLambdaVersionRMR05anu1EOKUW7MehDJlcKPmeQbqwAYzvl009VVZw": {
+      "Type": "AWS::Lambda::Version",
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "FunctionName": {
+          "Ref": "ResumesUploadUrlLambdaFunction"
+        },
+        "CodeSha256": "X5rDO+dNuqBPoCRtkkk7Sl8BOrP/A3yyISNx9jaHkQI="
+      }
+    },
+    "ResumesCompleteLambdaVersionzoPfcQH54abRN3GHubaKtTy4r21VnITegHfqDWM": {
+      "Type": "AWS::Lambda::Version",
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "FunctionName": {
+          "Ref": "ResumesCompleteLambdaFunction"
+        },
+        "CodeSha256": "X5rDO+dNuqBPoCRtkkk7Sl8BOrP/A3yyISNx9jaHkQI="
+      }
+    },
+    "ResumesListLambdaVersion33bCH7VHoNKM4IpsXMuWjeHp0quKs6BUPIQ9d2Ag": {
+      "Type": "AWS::Lambda::Version",
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "FunctionName": {
+          "Ref": "ResumesListLambdaFunction"
+        },
+        "CodeSha256": "X5rDO+dNuqBPoCRtkkk7Sl8BOrP/A3yyISNx9jaHkQI="
+      }
+    },
+    "ResumesDownloadUrlLambdaVersion9BiU3EzFuGwHgAEBRpLQ3Z9wNa1lyD8eZdohNUrV7I": {
+      "Type": "AWS::Lambda::Version",
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "FunctionName": {
+          "Ref": "ResumesDownloadUrlLambdaFunction"
+        },
+        "CodeSha256": "X5rDO+dNuqBPoCRtkkk7Sl8BOrP/A3yyISNx9jaHkQI="
       }
     },
     "ApiGatewayRestApi": {
@@ -346,6 +587,78 @@
           "Ref": "ApiGatewayResourceApiProfiles"
         },
         "PathPart": "me",
+        "RestApiId": {
+          "Ref": "ApiGatewayRestApi"
+        }
+      }
+    },
+    "ApiGatewayResourceApiResumes": {
+      "Type": "AWS::ApiGateway::Resource",
+      "Properties": {
+        "ParentId": {
+          "Ref": "ApiGatewayResourceApi"
+        },
+        "PathPart": "resumes",
+        "RestApiId": {
+          "Ref": "ApiGatewayRestApi"
+        }
+      }
+    },
+    "ApiGatewayResourceApiResumesUploadDashurl": {
+      "Type": "AWS::ApiGateway::Resource",
+      "Properties": {
+        "ParentId": {
+          "Ref": "ApiGatewayResourceApiResumes"
+        },
+        "PathPart": "upload-url",
+        "RestApiId": {
+          "Ref": "ApiGatewayRestApi"
+        }
+      }
+    },
+    "ApiGatewayResourceApiResumesComplete": {
+      "Type": "AWS::ApiGateway::Resource",
+      "Properties": {
+        "ParentId": {
+          "Ref": "ApiGatewayResourceApiResumes"
+        },
+        "PathPart": "complete",
+        "RestApiId": {
+          "Ref": "ApiGatewayRestApi"
+        }
+      }
+    },
+    "ApiGatewayResourceApiResumesMe": {
+      "Type": "AWS::ApiGateway::Resource",
+      "Properties": {
+        "ParentId": {
+          "Ref": "ApiGatewayResourceApiResumes"
+        },
+        "PathPart": "me",
+        "RestApiId": {
+          "Ref": "ApiGatewayRestApi"
+        }
+      }
+    },
+    "ApiGatewayResourceApiResumesResumeidVar": {
+      "Type": "AWS::ApiGateway::Resource",
+      "Properties": {
+        "ParentId": {
+          "Ref": "ApiGatewayResourceApiResumes"
+        },
+        "PathPart": "{resumeId}",
+        "RestApiId": {
+          "Ref": "ApiGatewayRestApi"
+        }
+      }
+    },
+    "ApiGatewayResourceApiResumesResumeidVarDownloadDashurl": {
+      "Type": "AWS::ApiGateway::Resource",
+      "Properties": {
+        "ParentId": {
+          "Ref": "ApiGatewayResourceApiResumesResumeidVar"
+        },
+        "PathPart": "download-url",
         "RestApiId": {
           "Ref": "ApiGatewayRestApi"
         }
@@ -480,6 +793,186 @@
         },
         "ResourceId": {
           "Ref": "ApiGatewayResourceApiProfilesMe"
+        },
+        "RestApiId": {
+          "Ref": "ApiGatewayRestApi"
+        }
+      }
+    },
+    "ApiGatewayMethodApiResumesUploadDashurlOptions": {
+      "Type": "AWS::ApiGateway::Method",
+      "Properties": {
+        "AuthorizationType": "NONE",
+        "HttpMethod": "OPTIONS",
+        "MethodResponses": [
+          {
+            "StatusCode": "200",
+            "ResponseParameters": {
+              "method.response.header.Access-Control-Allow-Origin": true,
+              "method.response.header.Access-Control-Allow-Headers": true,
+              "method.response.header.Access-Control-Allow-Methods": true
+            },
+            "ResponseModels": {}
+          }
+        ],
+        "RequestParameters": {},
+        "Integration": {
+          "Type": "MOCK",
+          "RequestTemplates": {
+            "application/json": "{statusCode:200}"
+          },
+          "ContentHandling": "CONVERT_TO_TEXT",
+          "IntegrationResponses": [
+            {
+              "StatusCode": "200",
+              "ResponseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,Authorization'",
+                "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,POST'"
+              },
+              "ResponseTemplates": {
+                "application/json": ""
+              }
+            }
+          ]
+        },
+        "ResourceId": {
+          "Ref": "ApiGatewayResourceApiResumesUploadDashurl"
+        },
+        "RestApiId": {
+          "Ref": "ApiGatewayRestApi"
+        }
+      }
+    },
+    "ApiGatewayMethodApiResumesCompleteOptions": {
+      "Type": "AWS::ApiGateway::Method",
+      "Properties": {
+        "AuthorizationType": "NONE",
+        "HttpMethod": "OPTIONS",
+        "MethodResponses": [
+          {
+            "StatusCode": "200",
+            "ResponseParameters": {
+              "method.response.header.Access-Control-Allow-Origin": true,
+              "method.response.header.Access-Control-Allow-Headers": true,
+              "method.response.header.Access-Control-Allow-Methods": true
+            },
+            "ResponseModels": {}
+          }
+        ],
+        "RequestParameters": {},
+        "Integration": {
+          "Type": "MOCK",
+          "RequestTemplates": {
+            "application/json": "{statusCode:200}"
+          },
+          "ContentHandling": "CONVERT_TO_TEXT",
+          "IntegrationResponses": [
+            {
+              "StatusCode": "200",
+              "ResponseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,Authorization'",
+                "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,POST'"
+              },
+              "ResponseTemplates": {
+                "application/json": ""
+              }
+            }
+          ]
+        },
+        "ResourceId": {
+          "Ref": "ApiGatewayResourceApiResumesComplete"
+        },
+        "RestApiId": {
+          "Ref": "ApiGatewayRestApi"
+        }
+      }
+    },
+    "ApiGatewayMethodApiResumesMeOptions": {
+      "Type": "AWS::ApiGateway::Method",
+      "Properties": {
+        "AuthorizationType": "NONE",
+        "HttpMethod": "OPTIONS",
+        "MethodResponses": [
+          {
+            "StatusCode": "200",
+            "ResponseParameters": {
+              "method.response.header.Access-Control-Allow-Origin": true,
+              "method.response.header.Access-Control-Allow-Headers": true,
+              "method.response.header.Access-Control-Allow-Methods": true
+            },
+            "ResponseModels": {}
+          }
+        ],
+        "RequestParameters": {},
+        "Integration": {
+          "Type": "MOCK",
+          "RequestTemplates": {
+            "application/json": "{statusCode:200}"
+          },
+          "ContentHandling": "CONVERT_TO_TEXT",
+          "IntegrationResponses": [
+            {
+              "StatusCode": "200",
+              "ResponseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,Authorization'",
+                "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,GET'"
+              },
+              "ResponseTemplates": {
+                "application/json": ""
+              }
+            }
+          ]
+        },
+        "ResourceId": {
+          "Ref": "ApiGatewayResourceApiResumesMe"
+        },
+        "RestApiId": {
+          "Ref": "ApiGatewayRestApi"
+        }
+      }
+    },
+    "ApiGatewayMethodApiResumesResumeidVarDownloadDashurlOptions": {
+      "Type": "AWS::ApiGateway::Method",
+      "Properties": {
+        "AuthorizationType": "NONE",
+        "HttpMethod": "OPTIONS",
+        "MethodResponses": [
+          {
+            "StatusCode": "200",
+            "ResponseParameters": {
+              "method.response.header.Access-Control-Allow-Origin": true,
+              "method.response.header.Access-Control-Allow-Headers": true,
+              "method.response.header.Access-Control-Allow-Methods": true
+            },
+            "ResponseModels": {}
+          }
+        ],
+        "RequestParameters": {},
+        "Integration": {
+          "Type": "MOCK",
+          "RequestTemplates": {
+            "application/json": "{statusCode:200}"
+          },
+          "ContentHandling": "CONVERT_TO_TEXT",
+          "IntegrationResponses": [
+            {
+              "StatusCode": "200",
+              "ResponseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,Authorization'",
+                "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,GET'"
+              },
+              "ResponseTemplates": {
+                "application/json": ""
+              }
+            }
+          ]
+        },
+        "ResourceId": {
+          "Ref": "ApiGatewayResourceApiResumesResumeidVarDownloadDashurl"
         },
         "RestApiId": {
           "Ref": "ApiGatewayRestApi"
@@ -716,7 +1209,191 @@
         "StudentProfilesCrudLambdaPermissionApiGateway"
       ]
     },
-    "ApiGatewayDeployment1771129529841": {
+    "ApiGatewayMethodApiResumesUploadDashurlPost": {
+      "Type": "AWS::ApiGateway::Method",
+      "Properties": {
+        "HttpMethod": "POST",
+        "RequestParameters": {},
+        "ResourceId": {
+          "Ref": "ApiGatewayResourceApiResumesUploadDashurl"
+        },
+        "RestApiId": {
+          "Ref": "ApiGatewayRestApi"
+        },
+        "ApiKeyRequired": false,
+        "AuthorizationType": "NONE",
+        "Integration": {
+          "IntegrationHttpMethod": "POST",
+          "Type": "AWS_PROXY",
+          "Uri": {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition"
+                },
+                ":apigateway:",
+                {
+                  "Ref": "AWS::Region"
+                },
+                ":lambda:path/2015-03-31/functions/",
+                {
+                  "Fn::GetAtt": [
+                    "ResumesUploadUrlLambdaFunction",
+                    "Arn"
+                  ]
+                },
+                "/invocations"
+              ]
+            ]
+          }
+        },
+        "MethodResponses": []
+      },
+      "DependsOn": [
+        "ResumesUploadUrlLambdaPermissionApiGateway"
+      ]
+    },
+    "ApiGatewayMethodApiResumesCompletePost": {
+      "Type": "AWS::ApiGateway::Method",
+      "Properties": {
+        "HttpMethod": "POST",
+        "RequestParameters": {},
+        "ResourceId": {
+          "Ref": "ApiGatewayResourceApiResumesComplete"
+        },
+        "RestApiId": {
+          "Ref": "ApiGatewayRestApi"
+        },
+        "ApiKeyRequired": false,
+        "AuthorizationType": "NONE",
+        "Integration": {
+          "IntegrationHttpMethod": "POST",
+          "Type": "AWS_PROXY",
+          "Uri": {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition"
+                },
+                ":apigateway:",
+                {
+                  "Ref": "AWS::Region"
+                },
+                ":lambda:path/2015-03-31/functions/",
+                {
+                  "Fn::GetAtt": [
+                    "ResumesCompleteLambdaFunction",
+                    "Arn"
+                  ]
+                },
+                "/invocations"
+              ]
+            ]
+          }
+        },
+        "MethodResponses": []
+      },
+      "DependsOn": [
+        "ResumesCompleteLambdaPermissionApiGateway"
+      ]
+    },
+    "ApiGatewayMethodApiResumesMeGet": {
+      "Type": "AWS::ApiGateway::Method",
+      "Properties": {
+        "HttpMethod": "GET",
+        "RequestParameters": {},
+        "ResourceId": {
+          "Ref": "ApiGatewayResourceApiResumesMe"
+        },
+        "RestApiId": {
+          "Ref": "ApiGatewayRestApi"
+        },
+        "ApiKeyRequired": false,
+        "AuthorizationType": "NONE",
+        "Integration": {
+          "IntegrationHttpMethod": "POST",
+          "Type": "AWS_PROXY",
+          "Uri": {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition"
+                },
+                ":apigateway:",
+                {
+                  "Ref": "AWS::Region"
+                },
+                ":lambda:path/2015-03-31/functions/",
+                {
+                  "Fn::GetAtt": [
+                    "ResumesListLambdaFunction",
+                    "Arn"
+                  ]
+                },
+                "/invocations"
+              ]
+            ]
+          }
+        },
+        "MethodResponses": []
+      },
+      "DependsOn": [
+        "ResumesListLambdaPermissionApiGateway"
+      ]
+    },
+    "ApiGatewayMethodApiResumesResumeidVarDownloadDashurlGet": {
+      "Type": "AWS::ApiGateway::Method",
+      "Properties": {
+        "HttpMethod": "GET",
+        "RequestParameters": {},
+        "ResourceId": {
+          "Ref": "ApiGatewayResourceApiResumesResumeidVarDownloadDashurl"
+        },
+        "RestApiId": {
+          "Ref": "ApiGatewayRestApi"
+        },
+        "ApiKeyRequired": false,
+        "AuthorizationType": "NONE",
+        "Integration": {
+          "IntegrationHttpMethod": "POST",
+          "Type": "AWS_PROXY",
+          "Uri": {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition"
+                },
+                ":apigateway:",
+                {
+                  "Ref": "AWS::Region"
+                },
+                ":lambda:path/2015-03-31/functions/",
+                {
+                  "Fn::GetAtt": [
+                    "ResumesDownloadUrlLambdaFunction",
+                    "Arn"
+                  ]
+                },
+                "/invocations"
+              ]
+            ]
+          }
+        },
+        "MethodResponses": []
+      },
+      "DependsOn": [
+        "ResumesDownloadUrlLambdaPermissionApiGateway"
+      ]
+    },
+    "ApiGatewayDeployment1771138122682": {
       "Type": "AWS::ApiGateway::Deployment",
       "Properties": {
         "RestApiId": {
@@ -728,11 +1405,19 @@
         "ApiGatewayMethodApiUsersMeProfileDashexistsOptions",
         "ApiGatewayMethodApiProfilesOptions",
         "ApiGatewayMethodApiProfilesMeOptions",
+        "ApiGatewayMethodApiResumesUploadDashurlOptions",
+        "ApiGatewayMethodApiResumesCompleteOptions",
+        "ApiGatewayMethodApiResumesMeOptions",
+        "ApiGatewayMethodApiResumesResumeidVarDownloadDashurlOptions",
         "ApiGatewayMethodApiUsersMeProfileDashexistsGet",
         "ApiGatewayMethodApiProfilesPost",
         "ApiGatewayMethodApiProfilesMeGet",
         "ApiGatewayMethodApiProfilesMePut",
-        "ApiGatewayMethodApiProfilesMeDelete"
+        "ApiGatewayMethodApiProfilesMeDelete",
+        "ApiGatewayMethodApiResumesUploadDashurlPost",
+        "ApiGatewayMethodApiResumesCompletePost",
+        "ApiGatewayMethodApiResumesMeGet",
+        "ApiGatewayMethodApiResumesResumeidVarDownloadDashurlGet"
       ]
     },
     "StudentProfilesCheckProfileExistsLambdaPermissionApiGateway": {
@@ -809,6 +1494,154 @@
         }
       }
     },
+    "ResumesUploadUrlLambdaPermissionApiGateway": {
+      "Type": "AWS::Lambda::Permission",
+      "Properties": {
+        "FunctionName": {
+          "Fn::GetAtt": [
+            "ResumesUploadUrlLambdaFunction",
+            "Arn"
+          ]
+        },
+        "Action": "lambda:InvokeFunction",
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": {
+          "Fn::Join": [
+            "",
+            [
+              "arn:",
+              {
+                "Ref": "AWS::Partition"
+              },
+              ":execute-api:",
+              {
+                "Ref": "AWS::Region"
+              },
+              ":",
+              {
+                "Ref": "AWS::AccountId"
+              },
+              ":",
+              {
+                "Ref": "ApiGatewayRestApi"
+              },
+              "/*/*"
+            ]
+          ]
+        }
+      }
+    },
+    "ResumesCompleteLambdaPermissionApiGateway": {
+      "Type": "AWS::Lambda::Permission",
+      "Properties": {
+        "FunctionName": {
+          "Fn::GetAtt": [
+            "ResumesCompleteLambdaFunction",
+            "Arn"
+          ]
+        },
+        "Action": "lambda:InvokeFunction",
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": {
+          "Fn::Join": [
+            "",
+            [
+              "arn:",
+              {
+                "Ref": "AWS::Partition"
+              },
+              ":execute-api:",
+              {
+                "Ref": "AWS::Region"
+              },
+              ":",
+              {
+                "Ref": "AWS::AccountId"
+              },
+              ":",
+              {
+                "Ref": "ApiGatewayRestApi"
+              },
+              "/*/*"
+            ]
+          ]
+        }
+      }
+    },
+    "ResumesListLambdaPermissionApiGateway": {
+      "Type": "AWS::Lambda::Permission",
+      "Properties": {
+        "FunctionName": {
+          "Fn::GetAtt": [
+            "ResumesListLambdaFunction",
+            "Arn"
+          ]
+        },
+        "Action": "lambda:InvokeFunction",
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": {
+          "Fn::Join": [
+            "",
+            [
+              "arn:",
+              {
+                "Ref": "AWS::Partition"
+              },
+              ":execute-api:",
+              {
+                "Ref": "AWS::Region"
+              },
+              ":",
+              {
+                "Ref": "AWS::AccountId"
+              },
+              ":",
+              {
+                "Ref": "ApiGatewayRestApi"
+              },
+              "/*/*"
+            ]
+          ]
+        }
+      }
+    },
+    "ResumesDownloadUrlLambdaPermissionApiGateway": {
+      "Type": "AWS::Lambda::Permission",
+      "Properties": {
+        "FunctionName": {
+          "Fn::GetAtt": [
+            "ResumesDownloadUrlLambdaFunction",
+            "Arn"
+          ]
+        },
+        "Action": "lambda:InvokeFunction",
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": {
+          "Fn::Join": [
+            "",
+            [
+              "arn:",
+              {
+                "Ref": "AWS::Partition"
+              },
+              ":execute-api:",
+              {
+                "Ref": "AWS::Region"
+              },
+              ":",
+              {
+                "Ref": "AWS::AccountId"
+              },
+              ":",
+              {
+                "Ref": "ApiGatewayRestApi"
+              },
+              "/*/*"
+            ]
+          ]
+        }
+      }
+    },
     "StudentProfilesTable": {
       "Type": "AWS::DynamoDB::Table",
       "DeletionPolicy": "Retain",
@@ -838,6 +1671,95 @@
           }
         ]
       }
+    },
+    "ResumesTable": {
+      "Type": "AWS::DynamoDB::Table",
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "TableName": "Resumes-dev",
+        "BillingMode": "PAY_PER_REQUEST",
+        "AttributeDefinitions": [
+          {
+            "AttributeName": "userSub",
+            "AttributeType": "S"
+          },
+          {
+            "AttributeName": "resumeId",
+            "AttributeType": "S"
+          }
+        ],
+        "KeySchema": [
+          {
+            "AttributeName": "userSub",
+            "KeyType": "HASH"
+          },
+          {
+            "AttributeName": "resumeId",
+            "KeyType": "RANGE"
+          }
+        ],
+        "Tags": [
+          {
+            "Key": "Project",
+            "Value": "TeamReveille"
+          },
+          {
+            "Key": "Component",
+            "Value": "Resumes"
+          }
+        ]
+      }
+    },
+    "ResumesBucket": {
+      "Type": "AWS::S3::Bucket",
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "BucketName": "tamu-resumes-dev-818189472529",
+        "BucketEncryption": {
+          "ServerSideEncryptionConfiguration": [
+            {
+              "ServerSideEncryptionByDefault": {
+                "SSEAlgorithm": "AES256"
+              }
+            }
+          ]
+        },
+        "PublicAccessBlockConfiguration": {
+          "BlockPublicAcls": true,
+          "BlockPublicPolicy": true,
+          "IgnorePublicAcls": true,
+          "RestrictPublicBuckets": true
+        },
+        "CorsConfiguration": {
+          "CorsRules": [
+            {
+              "AllowedHeaders": [
+                "*"
+              ],
+              "AllowedMethods": [
+                "PUT",
+                "HEAD"
+              ],
+              "AllowedOrigins": [
+                "*"
+              ],
+              "ExposedHeaders": [
+                "ETag"
+              ]
+            }
+          ]
+        },
+        "Tags": [
+          {
+            "Key": "Project",
+            "Value": "TeamReveille"
+          },
+          {
+            "Key": "Component",
+            "Value": "Resumes"
+          }
+        ]
+      }
     }
   },
   "Outputs": {
@@ -852,7 +1774,7 @@
     "StudentProfilesCheckProfileExistsLambdaFunctionQualifiedArn": {
       "Description": "Current Lambda function version",
       "Value": {
-        "Ref": "StudentProfilesCheckProfileExistsLambdaVersionnuhZPjgzXJPNm5HGoLnf7Q5c2AdsAi42DTFJ6BjoetA"
+        "Ref": "StudentProfilesCheckProfileExistsLambdaVersionTS20zgukA9Cb8F48YwQVe1aMHGqrBmovIw2EtD5A"
       },
       "Export": {
         "Name": "sls-team-reveille-student-core-dev-StudentProfilesCheckProfileExistsLambdaFunctionQualifiedArn"
@@ -861,10 +1783,46 @@
     "StudentProfilesCrudLambdaFunctionQualifiedArn": {
       "Description": "Current Lambda function version",
       "Value": {
-        "Ref": "StudentProfilesCrudLambdaVersionuzFB8cf8OfVlAkxBZjuAqo8cCyALMNMmHbA4wyhI8"
+        "Ref": "StudentProfilesCrudLambdaVersion2DLtCXrEvn5QvLPmzUSda5YMiblxj87PJPZI0Q9BlY"
       },
       "Export": {
         "Name": "sls-team-reveille-student-core-dev-StudentProfilesCrudLambdaFunctionQualifiedArn"
+      }
+    },
+    "ResumesUploadUrlLambdaFunctionQualifiedArn": {
+      "Description": "Current Lambda function version",
+      "Value": {
+        "Ref": "ResumesUploadUrlLambdaVersionRMR05anu1EOKUW7MehDJlcKPmeQbqwAYzvl009VVZw"
+      },
+      "Export": {
+        "Name": "sls-team-reveille-student-core-dev-ResumesUploadUrlLambdaFunctionQualifiedArn"
+      }
+    },
+    "ResumesCompleteLambdaFunctionQualifiedArn": {
+      "Description": "Current Lambda function version",
+      "Value": {
+        "Ref": "ResumesCompleteLambdaVersionzoPfcQH54abRN3GHubaKtTy4r21VnITegHfqDWM"
+      },
+      "Export": {
+        "Name": "sls-team-reveille-student-core-dev-ResumesCompleteLambdaFunctionQualifiedArn"
+      }
+    },
+    "ResumesListLambdaFunctionQualifiedArn": {
+      "Description": "Current Lambda function version",
+      "Value": {
+        "Ref": "ResumesListLambdaVersion33bCH7VHoNKM4IpsXMuWjeHp0quKs6BUPIQ9d2Ag"
+      },
+      "Export": {
+        "Name": "sls-team-reveille-student-core-dev-ResumesListLambdaFunctionQualifiedArn"
+      }
+    },
+    "ResumesDownloadUrlLambdaFunctionQualifiedArn": {
+      "Description": "Current Lambda function version",
+      "Value": {
+        "Ref": "ResumesDownloadUrlLambdaVersion9BiU3EzFuGwHgAEBRpLQ3Z9wNa1lyD8eZdohNUrV7I"
+      },
+      "Export": {
+        "Name": "sls-team-reveille-student-core-dev-ResumesDownloadUrlLambdaFunctionQualifiedArn"
       }
     },
     "ServiceEndpoint": {

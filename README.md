@@ -18,8 +18,22 @@ Serverless backend for the **Student Identity and Profile** system (Lambda, Dyna
 | POST | `/api/profiles` | Create profile (first-time) |
 | PUT | `/api/profiles/me` | Update profile |
 | DELETE | `/api/profiles/me` | Delete profile |
+| POST | `/api/resumes/upload-url` | Get presigned URL for resume upload |
+| POST | `/api/resumes/complete` | Complete resume upload after S3 PUT |
+| GET | `/api/resumes/me` | List my resumes (metadata only) |
+| GET | `/api/resumes/{resumeId}/download-url` | Get presigned download URL |
 
 All endpoints require `Authorization: Bearer <Cognito_ID_Token>`.
+
+### Resume Upload (S3 Presigned URL)
+
+PDFs never pass through Lambda. Flow:
+
+1. **POST /api/resumes/upload-url** → returns `{ uploadUrl, resumeId, s3Key, expiresInSeconds }`
+2. **PUT to `uploadUrl`** (direct to S3) with `Content-Type: application/pdf` and PDF body
+3. **POST /api/resumes/complete** with `{ resumeId }` → confirms upload, updates profile
+
+See [docs/RESUME_UPLOAD.md](docs/RESUME_UPLOAD.md) for frontend integration and curl examples.
 
 ### Environment Files
 

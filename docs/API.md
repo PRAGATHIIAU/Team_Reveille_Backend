@@ -11,6 +11,10 @@ https://2gzy1e8qga.execute-api.us-east-1.amazonaws.com/dev
 | Profile Exists | `https://2gzy1e8qga.execute-api.us-east-1.amazonaws.com/dev/api/users/me/profile-exists` |
 | Profiles (CRUD) | `https://2gzy1e8qga.execute-api.us-east-1.amazonaws.com/dev/api/profiles` |
 | My Profile | `https://2gzy1e8qga.execute-api.us-east-1.amazonaws.com/dev/api/profiles/me` |
+| Resume Upload URL | `https://2gzy1e8qga.execute-api.us-east-1.amazonaws.com/dev/api/resumes/upload-url` |
+| Resume Complete | `https://2gzy1e8qga.execute-api.us-east-1.amazonaws.com/dev/api/resumes/complete` |
+| My Resumes | `https://2gzy1e8qga.execute-api.us-east-1.amazonaws.com/dev/api/resumes/me` |
+| Download URL | `https://2gzy1e8qga.execute-api.us-east-1.amazonaws.com/dev/api/resumes/{resumeId}/download-url` |
 
 ---
 
@@ -324,9 +328,10 @@ Authorization: Bearer eyJraWQiOiJxxx...
 
 | Status | Error Code | Description |
 |--------|------------|-------------|
-| 400 | BAD_REQUEST | Invalid JSON in request body |
+| 400 | BAD_REQUEST | Invalid JSON, fileName, contentType, or resumeId |
 | 401 | UNAUTHORIZED | Missing, invalid, or expired token |
-| 404 | NOT_FOUND | Profile does not exist |
+| 403 | FORBIDDEN | Non-TAMU email or email not verified (resume upload) |
+| 404 | NOT_FOUND | Profile or resume does not exist |
 | 405 | METHOD_NOT_ALLOWED | HTTP method not supported for the path |
 | 500 | INTERNAL_ERROR | Server error |
 
@@ -341,6 +346,111 @@ All error responses follow this structure:
 
 ---
 
+---
+
+## Resume Upload Endpoints
+
+### 6. Get Presigned Upload URL
+
+Returns a presigned PUT URL for uploading a PDF resume directly to S3. **Requires @tamu.edu email.**
+
+| Field | Value |
+|-------|-------|
+| **Method** | `POST` |
+| **URL** | `https://2gzy1e8qga.execute-api.us-east-1.amazonaws.com/dev/api/resumes/upload-url` |
+| **Auth** | Required (TAMU email) |
+| **Request Body** | JSON |
+
+#### Request Body
+
+```json
+{
+  "fileName": "resume.pdf",
+  "contentType": "application/pdf"
+}
+```
+
+#### Sample Response – 200 OK
+
+```json
+{
+  "uploadUrl": "https://...",
+  "resumeId": "uuid",
+  "s3Key": "resumes/USER#sub/uuid.pdf",
+  "expiresInSeconds": 120
+}
+```
+
+### 7. Complete Resume Upload
+
+Call after PUTting the file to the presigned URL. Verifies file in S3 and updates StudentProfiles.
+
+| Field | Value |
+|-------|-------|
+| **Method** | `POST` |
+| **URL** | `https://2gzy1e8qga.execute-api.us-east-1.amazonaws.com/dev/api/resumes/complete` |
+| **Auth** | Required |
+| **Request Body** | `{ "resumeId": "string" }` |
+
+#### Sample Response – 200 OK
+
+```json
+{
+  "resumeId": "uuid",
+  "status": "UPLOADED",
+  "s3Key": "resumes/USER#sub/uuid.pdf"
+}
+```
+
+### 8. List My Resumes
+
+Returns metadata for all resumes (no presigned URLs).
+
+| Field | Value |
+|-------|-------|
+| **Method** | `GET` |
+| **URL** | `https://2gzy1e8qga.execute-api.us-east-1.amazonaws.com/dev/api/resumes/me` |
+| **Auth** | Required |
+
+#### Sample Response – 200 OK
+
+```json
+{
+  "resumes": [
+    {
+      "resumeId": "uuid",
+      "s3Key": "resumes/USER#sub/uuid.pdf",
+      "fileName": "resume.pdf",
+      "status": "UPLOADED",
+      "fileSize": 12345,
+      "createdAt": "...",
+      "updatedAt": "..."
+    }
+  ]
+}
+```
+
+### 9. Get Download URL
+
+Returns a presigned GET URL for downloading a resume.
+
+| Field | Value |
+|-------|-------|
+| **Method** | `GET` |
+| **URL** | `https://2gzy1e8qga.execute-api.us-east-1.amazonaws.com/dev/api/resumes/{resumeId}/download-url` |
+| **Auth** | Required |
+
+#### Sample Response – 200 OK
+
+```json
+{
+  "downloadUrl": "https://...",
+  "expiresInSeconds": 300
+}
+```
+
+---
+
 ## Summary Table
 
 | Method | Path | Description |
@@ -350,3 +460,7 @@ All error responses follow this structure:
 | POST | `/api/profiles` | Create profile |
 | PUT | `/api/profiles/me` | Update profile |
 | DELETE | `/api/profiles/me` | Delete profile |
+| POST | `/api/resumes/upload-url` | Get presigned upload URL |
+| POST | `/api/resumes/complete` | Complete resume upload |
+| GET | `/api/resumes/me` | List my resumes |
+| GET | `/api/resumes/{resumeId}/download-url` | Get presigned download URL |

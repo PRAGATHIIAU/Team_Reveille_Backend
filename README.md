@@ -1,45 +1,59 @@
-## Team Reveille - Basic Node MVC Backend
+## Team Reveille – Student Core Backend
 
-This is a **very basic Node.js "Hello World" backend** using an MVC-style structure.
+Serverless backend for the **Student Identity and Profile** system (Lambda, DynamoDB, Cognito JWT).
 
 ### Stack
 
-- **Runtime**: Node.js
-- **Framework**: Express
+- **Compute**: AWS Lambda
+- **API**: API Gateway (REST)
+- **Database**: DynamoDB (`StudentProfiles` table)
+- **Auth**: Cognito JWT (Google SSO)
 
-### Structure
+### APIs
 
-- `src/server.js` – Starts the HTTP server.
-- `src/app.js` – Creates the Express app and wires up middleware and routes.
-- `src/routes/index.js` – Defines routes and maps them to controllers.
-- `src/controllers/HomeController.js` – Controller that handles the root (`/`) request.
-- `src/models/HelloMessage.js` – Minimal model returning the hello-world message string.
+| Method | Path | Description |
+|--------|------|-------------|
+| GET | `/api/users/me/profile-exists` | Check first-time sign-in (`{ exists: true \| false }`) |
+| GET | `/api/profiles/me` | Get current user's profile |
+| POST | `/api/profiles` | Create profile (first-time) |
+| PUT | `/api/profiles/me` | Update profile |
+| DELETE | `/api/profiles/me` | Delete profile |
+
+All endpoints require `Authorization: Bearer <Cognito_ID_Token>`.
+
+### Environment Files
+
+| File | Purpose |
+|------|---------|
+| `.env.example` | Template – copy and fill values |
+| `.env.development` | Local development (gitignored) |
+| `.env.production` | Production (gitignored) |
+
+Required env vars: `COGNITO_USER_POOL_ID`, `COGNITO_CLIENT_ID`, `AWS_REGION`, `STUDENT_PROFILES_TABLE`.
 
 ### Getting Started
 
-1. Install dependencies:
+1. Copy `.env.example` to `.env.development` and fill Cognito values.
+
+2. Install dependencies:
 
 ```bash
 npm install
 ```
 
-2. Run the server:
+3. Deploy:
 
 ```bash
-npm start
-# or, for auto-reload during development:
-npm run dev
+npm run deploy
 ```
 
-3. Open your browser or an API client and hit:
+4. Test locally (requires env vars):
 
-```text
-GET http://localhost:3000/
+```bash
+serverless invoke local -f studentProfilesCheckProfileExists -e '{"headers":{"Authorization":"Bearer <your-id-token>"}}'
 ```
 
-You should receive a JSON response:
+### Todo List
 
-```json
-{ "message": "Hello World from Node MVC!" }
-```
+See `TODO.md` for the full checklist and naming conventions.
 

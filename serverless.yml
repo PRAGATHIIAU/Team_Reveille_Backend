@@ -1,0 +1,90 @@
+service: team-reveille-student-core
+
+frameworkVersion: "3"
+
+plugins:
+  - serverless-dotenv-plugin
+
+provider:
+  name: aws
+  runtime: nodejs20.x
+  region: ${opt:region, 'us-east-1'}
+  stage: ${opt:stage, 'dev'}
+  environment:
+    STUDENT_PROFILES_TABLE: ${self:custom.studentProfilesTableName}
+    COGNITO_USER_POOL_ID: ${env:COGNITO_USER_POOL_ID, ''}
+    COGNITO_CLIENT_ID: ${env:COGNITO_CLIENT_ID, ''}
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action:
+            - dynamodb:GetItem
+            - dynamodb:PutItem
+            - dynamodb:UpdateItem
+            - dynamodb:DeleteItem
+            - dynamodb:Query
+            - dynamodb:Scan
+          Resource:
+            - !GetAtt StudentProfilesTable.Arn
+
+custom:
+  studentProfilesTableName: StudentProfiles-${self:provider.stage}
+  cors:
+    origin: "*"
+    headers:
+      - Content-Type
+      - Authorization
+
+functions:
+  # Check if profile exists (first-time sign-in)
+  studentProfilesCheckProfileExists:
+    handler: src/handlers/studentProfiles.checkProfileExists
+    events:
+      - http:
+          path: api/users/me/profile-exists
+          method: get
+          cors: ${self:custom.cors}
+    # JWT verification performed in handler (Cognito token in Authorization header)
+
+  # Full CRUD for student profiles
+  studentProfilesCrud:
+    handler: src/handlers/studentProfiles.crud
+    events:
+      - http:
+          path: api/profiles
+          method: post
+          cors: ${self:custom.cors}
+      - http:
+          path: api/profiles/me
+          method: get
+          cors: ${self:custom.cors}
+      - http:
+          path: api/profiles/me
+          method: put
+          cors: ${self:custom.cors}
+      - http:
+          path: api/profiles/me
+          method: delete
+          cors: ${self:custom.cors}
+    # JWT verification performed in handler (Cognito token in Authorization header)
+
+resources:
+  Resources:
+    StudentProfilesTable:
+      Type: AWS::DynamoDB::Table
+      DeletionPolicy: Retain
+      Properties:
+        TableName: ${self:custom.studentProfilesTableName}
+        BillingMode: PAY_PER_REQUEST
+        AttributeDefinitions:
+          - AttributeName: userId
+            AttributeType: S
+        KeySchema:
+          - AttributeName: userId
+            KeyType: HASH
+        Tags:
+          - Key: Project
+            Value: TeamReveille
+          - Key: Component
+            Value: StudentProfiles

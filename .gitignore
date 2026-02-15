@@ -2,4 +2,12 @@ node_modules
 npm-debug.log*
 dist
 .DS_Store
+
+# Environment files with secrets (keep .env.example committed)
 .env
+.env.local
+.env.development
+.env.production
+.env.dev
+.env.prod
+.env.*.local

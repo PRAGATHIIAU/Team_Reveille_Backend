@@ -53,6 +53,17 @@ async function uploadUrl(event) {
       });
     }
 
+    // One resume per user: delete any existing resume (S3 object + DynamoDB record) before creating new one
+    const existingResumes = await resumesService.listByUser(userId);
+    for (const item of existingResumes) {
+      try {
+        await s3PresignService.deleteObject(item.s3Key);
+      } catch (e) {
+        // Ignore S3 delete errors (e.g. object never uploaded or already deleted)
+      }
+      await resumesService.deleteRecord(userId, item.resumeId);
+    }
+
     const resumeId = uuidv4();
     const s3Key = `resumes/USER#${userId}/${resumeId}.pdf`;
 

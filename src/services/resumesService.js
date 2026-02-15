@@ -11,6 +11,7 @@ const {
   PutCommand,
   UpdateCommand,
   QueryCommand,
+  DeleteCommand,
 } = require("@aws-sdk/lib-dynamodb");
 
 const client = new DynamoDBClient({});
@@ -92,6 +93,18 @@ async function markUploaded(userSub, resumeId, { fileSize, etag }) {
 }
 
 /**
+ * Delete a resume record by userSub and resumeId.
+ */
+async function deleteRecord(userSub, resumeId) {
+  await docClient.send(
+    new DeleteCommand({
+      TableName: getTableName(),
+      Key: { userSub, resumeId },
+    })
+  );
+}
+
+/**
  * List all resumes for a user (metadata only, no presigned URLs).
  */
 async function listByUser(userSub) {
@@ -117,5 +130,6 @@ module.exports = {
   create,
   get,
   markUploaded,
+  deleteRecord,
   listByUser,
 };

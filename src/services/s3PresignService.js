@@ -3,7 +3,7 @@
  * Used for secure direct upload (PUT) and download (GET) without passing binaries through Lambda.
  */
 
-const { S3Client, PutObjectCommand, GetObjectCommand, HeadObjectCommand } = require("@aws-sdk/client-s3");
+const { S3Client, PutObjectCommand, GetObjectCommand, HeadObjectCommand, DeleteObjectCommand } = require("@aws-sdk/client-s3");
 const { getSignedUrl } = require("@aws-sdk/s3-request-presigner");
 
 const client = new S3Client({});
@@ -65,8 +65,21 @@ async function headObject(key) {
   };
 }
 
+/**
+ * Delete an object from the resumes bucket (used when replacing user's resume).
+ * @param {string} key - S3 object key
+ */
+async function deleteObject(key) {
+  const command = new DeleteObjectCommand({
+    Bucket: getBucket(),
+    Key: key,
+  });
+  await client.send(command);
+}
+
 module.exports = {
   getPresignedPutUrl,
   getPresignedGetUrl,
   headObject,
+  deleteObject,
 };

@@ -25,7 +25,7 @@ function getTableName() {
 }
 
 /**
- * Profile schema: name, uin, major, classYear, gradDate, linkedInUrl, resumeS3Key
+ * Profile schema: name, uin, degree, major, gradDate (graduation month-year), linkedInUrl, resumeS3Key (resume reference)
  */
 
 async function getByUserId(userId) {
@@ -49,8 +49,8 @@ async function create(userId, profile) {
     userId,
     name: profile.name,
     uin: profile.uin,
+    degree: profile.degree ?? null,
     major: profile.major,
-    classYear: profile.classYear,
     gradDate: profile.gradDate,
     linkedInUrl: profile.linkedInUrl ?? null,
     resumeS3Key: profile.resumeS3Key ?? null,
@@ -73,7 +73,7 @@ async function update(userId, profile) {
   const exprNames = {};
   const exprValues = { ":updatedAt": now };
 
-  const allowed = ["name", "uin", "major", "classYear", "gradDate", "linkedInUrl", "resumeS3Key"];
+  const allowed = ["name", "uin", "degree", "major", "gradDate", "linkedInUrl", "resumeS3Key"];
   for (const key of allowed) {
     if (profile[key] !== undefined) {
       const nameKey = `#${key}`;

@@ -114,13 +114,15 @@ Authorization: Bearer eyJraWQiOiJxxx...
 
 #### Sample Response – 200 OK
 
+Profile attributes stored in DynamoDB: **Name**, **UIN**, **Degree**, **Major**, **Graduation Month-Year**, **LinkedIn URL**, **resume reference**.
+
 ```json
 {
   "userId": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
   "name": "John Doe",
   "uin": "123456789",
+  "degree": "BS",
   "major": "Computer Science",
-  "classYear": "26",
   "gradDate": "2026-05",
   "linkedInUrl": "https://linkedin.com/in/johndoe",
   "resumeS3Key": "resumes/a1b2c3d4/resume.pdf",
@@ -164,12 +166,12 @@ Content-Type: application/json
 | Field | Type | Required | Description |
 |-------|------|----------|-------------|
 | `name` | string | Yes | Full name |
-| `uin` | string | Yes | University Identification Number |
+| `uin` | string | Yes | University Identification Number (UIN) |
+| `degree` | string | No | Degree (e.g. BS, MS, PhD) |
 | `major` | string | Yes | Academic major |
-| `classYear` | string | Yes | Class year (e.g. `"26"` for 2026) |
-| `gradDate` | string | Yes | Graduation date (e.g. `"2026-05"`) |
+| `gradDate` | string | Yes | Graduation month-year (e.g. `"2026-05"`) |
 | `linkedInUrl` | string | No | LinkedIn profile URL |
-| `resumeS3Key` | string | No | S3 object key of uploaded resume PDF |
+| `resumeS3Key` | string | No | Resume reference (S3 object key of uploaded resume PDF) |
 
 #### Sample Request
 
@@ -181,8 +183,8 @@ Content-Type: application/json
 {
   "name": "Jane Smith",
   "uin": "987654321",
+  "degree": "BS",
   "major": "Computer Engineering",
-  "classYear": "26",
   "gradDate": "2026-05",
   "linkedInUrl": "https://linkedin.com/in/janesmith",
   "resumeS3Key": null
@@ -196,8 +198,8 @@ Content-Type: application/json
   "userId": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
   "name": "Jane Smith",
   "uin": "987654321",
+  "degree": "BS",
   "major": "Computer Engineering",
-  "classYear": "26",
   "gradDate": "2026-05",
   "linkedInUrl": "https://linkedin.com/in/janesmith",
   "resumeS3Key": null,
@@ -241,12 +243,12 @@ Content-Type: application/json
 | Field | Type | Required | Description |
 |-------|------|----------|-------------|
 | `name` | string | No | Full name |
-| `uin` | string | No | University Identification Number |
+| `uin` | string | No | University Identification Number (UIN) |
+| `degree` | string | No | Degree (e.g. BS, MS, PhD) |
 | `major` | string | No | Academic major |
-| `classYear` | string | No | Class year |
-| `gradDate` | string | No | Graduation date |
+| `gradDate` | string | No | Graduation month-year |
 | `linkedInUrl` | string | No | LinkedIn profile URL |
-| `resumeS3Key` | string | No | S3 object key of resume |
+| `resumeS3Key` | string | No | Resume reference (S3 object key) |
 
 #### Sample Request
 
@@ -268,8 +270,8 @@ Content-Type: application/json
   "userId": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
   "name": "Jane Smith",
   "uin": "987654321",
+  "degree": "BS",
   "major": "Computer Engineering",
-  "classYear": "26",
   "gradDate": "2026-05",
   "linkedInUrl": "https://linkedin.com/in/janesmith-updated",
   "resumeS3Key": "resumes/a1b2c3d4/resume-v2.pdf",

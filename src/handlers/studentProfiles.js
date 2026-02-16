@@ -1,7 +1,7 @@
 /**
  * Lambda handlers for StudentProfiles:
  * - checkProfileExists: GET /api/users/me/profile-exists
- * - crud: GET/POST/PUT/DELETE /api/profiles and /api/profiles/me
+ * - crud: GET /api/profiles (list all except me), GET/POST/PUT/DELETE /api/profiles and /api/profiles/me
  */
 
 const { requireAuth } = require("../lib/jwt");
@@ -48,6 +48,12 @@ async function crud(event) {
     const method = event.httpMethod;
     const path = event.path ?? event.rawPath ?? "";
     const pathIncludesMe = /\/me(\/|$)/.test(path) || path.endsWith("/me");
+
+    // GET /api/profiles (no /me) – List all profiles except current user (Students Connect)
+    if (method === "GET" && path.includes("/profiles") && !pathIncludesMe) {
+      const profiles = await studentProfilesService.listAllExceptUserId(userId);
+      return jsonResponse(200, { profiles });
+    }
 
     if (method === "GET" && pathIncludesMe) {
       const profile = await studentProfilesService.getByUserId(userId);

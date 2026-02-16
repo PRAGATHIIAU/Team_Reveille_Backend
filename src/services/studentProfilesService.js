@@ -10,6 +10,7 @@ const {
   PutCommand,
   UpdateCommand,
   DeleteCommand,
+  ScanCommand,
 } = require("@aws-sdk/lib-dynamodb");
 
 const client = new DynamoDBClient({});
@@ -112,10 +113,34 @@ async function remove(userId) {
   return { deleted: true };
 }
 
+/**
+ * List all student profiles except the given userId (for Students Connect).
+ * Returns only public fields: name, uin, degree, major, gradDate, linkedInUrl.
+ */
+async function listAllExceptUserId(excludeUserId) {
+  const result = await docClient.send(
+    new ScanCommand({
+      TableName: getTableName(),
+      FilterExpression: "userId <> :excludeUserId",
+      ExpressionAttributeValues: { ":excludeUserId": excludeUserId },
+    })
+  );
+  const items = result.Items ?? [];
+  return items.map((item) => ({
+    name: item.name,
+    uin: item.uin,
+    degree: item.degree ?? null,
+    major: item.major,
+    gradDate: item.gradDate,
+    linkedInUrl: item.linkedInUrl ?? null,
+  }));
+}
+
 module.exports = {
   getByUserId,
   exists,
   create,
   update,
   remove,
+  listAllExceptUserId,
 };

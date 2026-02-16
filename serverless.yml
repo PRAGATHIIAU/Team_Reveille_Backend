@@ -79,6 +79,10 @@ functions:
     events:
       - http:
           path: api/profiles
+          method: get
+          cors: ${self:custom.cors}
+      - http:
+          path: api/profiles
           method: post
           cors: ${self:custom.cors}
       - http:

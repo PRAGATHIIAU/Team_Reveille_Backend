@@ -9,6 +9,7 @@ https://2gzy1e8qga.execute-api.us-east-1.amazonaws.com/dev
 | Endpoint | Full URL |
 |----------|----------|
 | Profile Exists | `https://2gzy1e8qga.execute-api.us-east-1.amazonaws.com/dev/api/users/me/profile-exists` |
+| List Profiles (Students Connect) | `https://2gzy1e8qga.execute-api.us-east-1.amazonaws.com/dev/api/profiles` |
 | Profiles (CRUD) | `https://2gzy1e8qga.execute-api.us-east-1.amazonaws.com/dev/api/profiles` |
 | My Profile | `https://2gzy1e8qga.execute-api.us-east-1.amazonaws.com/dev/api/profiles/me` |
 | Resume Upload URL | `https://2gzy1e8qga.execute-api.us-east-1.amazonaws.com/dev/api/resumes/upload-url` |
@@ -87,7 +88,59 @@ Authorization: Bearer eyJraWQiOiJxxx...
 
 ---
 
-### 2. Get My Profile
+### 2. List Student Profiles (Students Connect)
+
+Returns all student profiles except the authenticated user's profile. Use for Students Connect to browse other students.
+
+| Field | Value |
+|-------|-------|
+| **Method** | `GET` |
+| **URL** | `https://2gzy1e8qga.execute-api.us-east-1.amazonaws.com/dev/api/profiles` |
+| **Auth** | Required |
+| **Request Body** | None |
+| **Query Params** | None |
+
+#### Headers
+
+```
+Authorization: Bearer <cognito_id_token>
+```
+
+#### Sample Request
+
+```http
+GET /api/profiles
+Authorization: Bearer eyJraWQiOiJxxx...
+```
+
+#### Sample Response – 200 OK
+
+```json
+{
+  "profiles": [
+    {
+      "name": "Jane Smith",
+      "uin": "987654321",
+      "degree": "BS",
+      "major": "Computer Engineering",
+      "gradDate": "2026-05",
+      "linkedInUrl": "https://linkedin.com/in/janesmith"
+    },
+    {
+      "name": "Alex Chen",
+      "uin": "111222333",
+      "degree": "MS",
+      "major": "Computer Science",
+      "gradDate": "2025-12",
+      "linkedInUrl": null
+    }
+  ]
+}
+```
+
+---
+
+### 3. Get My Profile
 
 Returns the current user's student profile.
 
@@ -142,7 +195,7 @@ Profile attributes stored in DynamoDB: **Name**, **UIN**, **Degree**, **Major**,
 
 ---
 
-### 3. Create Profile
+### 4. Create Profile
 
 Creates a new student profile (first-time sign-in). Fails if the user already has a profile.
 
@@ -219,7 +272,7 @@ Content-Type: application/json
 
 ---
 
-### 4. Update Profile
+### 5. Update Profile
 
 Updates the current user's profile. Only provided fields are updated.
 
@@ -291,7 +344,7 @@ Content-Type: application/json
 
 ---
 
-### 5. Delete Profile
+### 6. Delete Profile
 
 Deletes the current user's profile.
 
@@ -352,7 +405,7 @@ All error responses follow this structure:
 
 ## Resume Upload Endpoints
 
-### 6. Get Presigned Upload URL
+### 7. Get Presigned Upload URL
 
 Returns a presigned PUT URL for uploading a PDF resume directly to S3. **Requires @tamu.edu email.**
 
@@ -383,7 +436,7 @@ Returns a presigned PUT URL for uploading a PDF resume directly to S3. **Require
 }
 ```
 
-### 7. Complete Resume Upload
+### 8. Complete Resume Upload
 
 Call after PUTting the file to the presigned URL. Verifies file in S3 and updates StudentProfiles.
 
@@ -404,7 +457,7 @@ Call after PUTting the file to the presigned URL. Verifies file in S3 and update
 }
 ```
 
-### 8. List My Resumes
+### 9. List My Resumes
 
 Returns metadata for all resumes (no presigned URLs).
 
@@ -432,7 +485,7 @@ Returns metadata for all resumes (no presigned URLs).
 }
 ```
 
-### 9. Get Download URL
+### 10. Get Download URL
 
 Returns a presigned GET URL for downloading a resume.
 
@@ -458,6 +511,7 @@ Returns a presigned GET URL for downloading a resume.
 | Method | Path | Description |
 |--------|------|-------------|
 | GET | `/api/users/me/profile-exists` | Check if profile exists |
+| GET | `/api/profiles` | List student profiles (Students Connect) |
 | GET | `/api/profiles/me` | Get my profile |
 | POST | `/api/profiles` | Create profile |
 | PUT | `/api/profiles/me` | Update profile |

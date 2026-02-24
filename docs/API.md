@@ -121,6 +121,7 @@ Authorization: Bearer eyJraWQiOiJxxx...
     {
       "name": "Jane Smith",
       "uin": "987654321",
+      "email": "jane.smith@example.com",
       "degree": "BS",
       "major": "Computer Engineering",
       "gradDate": "2026-05",
@@ -129,6 +130,7 @@ Authorization: Bearer eyJraWQiOiJxxx...
     {
       "name": "Alex Chen",
       "uin": "111222333",
+      "email": "alex.chen@example.com",
       "degree": "MS",
       "major": "Computer Science",
       "gradDate": "2025-12",
@@ -167,13 +169,14 @@ Authorization: Bearer eyJraWQiOiJxxx...
 
 #### Sample Response – 200 OK
 
-Profile attributes stored in DynamoDB: **Name**, **UIN**, **Degree**, **Major**, **Graduation Month-Year**, **LinkedIn URL**, **resume reference**.
+Profile attributes stored in DynamoDB: **Name**, **UIN**, **Email**, **Degree**, **Major**, **Graduation Month-Year**, **LinkedIn URL**, **resume reference**.
 
 ```json
 {
   "userId": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
   "name": "John Doe",
   "uin": "123456789",
+  "email": "john.doe@example.com",
   "degree": "BS",
   "major": "Computer Science",
   "gradDate": "2026-05",
@@ -220,6 +223,7 @@ Content-Type: application/json
 |-------|------|----------|-------------|
 | `name` | string | Yes | Full name |
 | `uin` | string | Yes | University Identification Number (UIN) |
+| `email` | string | No | Email address |
 | `degree` | string | No | Degree (e.g. BS, MS, PhD) |
 | `major` | string | Yes | Academic major |
 | `gradDate` | string | Yes | Graduation month-year (e.g. `"2026-05"`) |
@@ -236,6 +240,7 @@ Content-Type: application/json
 {
   "name": "Jane Smith",
   "uin": "987654321",
+  "email": "jane.smith@example.com",
   "degree": "BS",
   "major": "Computer Engineering",
   "gradDate": "2026-05",
@@ -251,6 +256,7 @@ Content-Type: application/json
   "userId": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
   "name": "Jane Smith",
   "uin": "987654321",
+  "email": "jane.smith@example.com",
   "degree": "BS",
   "major": "Computer Engineering",
   "gradDate": "2026-05",
@@ -297,6 +303,7 @@ Content-Type: application/json
 |-------|------|----------|-------------|
 | `name` | string | No | Full name |
 | `uin` | string | No | University Identification Number (UIN) |
+| `email` | string | No | Email address |
 | `degree` | string | No | Degree (e.g. BS, MS, PhD) |
 | `major` | string | No | Academic major |
 | `gradDate` | string | No | Graduation month-year |
@@ -323,6 +330,7 @@ Content-Type: application/json
   "userId": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
   "name": "Jane Smith",
   "uin": "987654321",
+  "email": "jane.smith@example.com",
   "degree": "BS",
   "major": "Computer Engineering",
   "gradDate": "2026-05",

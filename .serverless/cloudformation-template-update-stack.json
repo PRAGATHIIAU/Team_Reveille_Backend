@@ -250,7 +250,7 @@
           "S3Bucket": {
             "Ref": "ServerlessDeploymentBucket"
           },
-          "S3Key": "serverless/team-reveille-student-core/dev/1771210351452-2026-02-16T02:52:31.452Z/team-reveille-student-core.zip"
+          "S3Key": "serverless/team-reveille-student-core/dev/1771902350453-2026-02-24T03:05:50.453Z/team-reveille-student-core.zip"
         },
         "Handler": "src/handlers/studentProfiles.checkProfileExists",
         "Runtime": "nodejs20.x",
@@ -284,7 +284,7 @@
           "S3Bucket": {
             "Ref": "ServerlessDeploymentBucket"
           },
-          "S3Key": "serverless/team-reveille-student-core/dev/1771210351452-2026-02-16T02:52:31.452Z/team-reveille-student-core.zip"
+          "S3Key": "serverless/team-reveille-student-core/dev/1771902350453-2026-02-24T03:05:50.453Z/team-reveille-student-core.zip"
         },
         "Handler": "src/handlers/studentProfiles.crud",
         "Runtime": "nodejs20.x",
@@ -318,7 +318,7 @@
           "S3Bucket": {
             "Ref": "ServerlessDeploymentBucket"
           },
-          "S3Key": "serverless/team-reveille-student-core/dev/1771210351452-2026-02-16T02:52:31.452Z/team-reveille-student-core.zip"
+          "S3Key": "serverless/team-reveille-student-core/dev/1771902350453-2026-02-24T03:05:50.453Z/team-reveille-student-core.zip"
         },
         "Handler": "src/handlers/resumes.uploadUrl",
         "Runtime": "nodejs20.x",
@@ -352,7 +352,7 @@
           "S3Bucket": {
             "Ref": "ServerlessDeploymentBucket"
           },
-          "S3Key": "serverless/team-reveille-student-core/dev/1771210351452-2026-02-16T02:52:31.452Z/team-reveille-student-core.zip"
+          "S3Key": "serverless/team-reveille-student-core/dev/1771902350453-2026-02-24T03:05:50.453Z/team-reveille-student-core.zip"
         },
         "Handler": "src/handlers/resumes.complete",
         "Runtime": "nodejs20.x",
@@ -386,7 +386,7 @@
           "S3Bucket": {
             "Ref": "ServerlessDeploymentBucket"
           },
-          "S3Key": "serverless/team-reveille-student-core/dev/1771210351452-2026-02-16T02:52:31.452Z/team-reveille-student-core.zip"
+          "S3Key": "serverless/team-reveille-student-core/dev/1771902350453-2026-02-24T03:05:50.453Z/team-reveille-student-core.zip"
         },
         "Handler": "src/handlers/resumes.list",
         "Runtime": "nodejs20.x",
@@ -420,7 +420,7 @@
           "S3Bucket": {
             "Ref": "ServerlessDeploymentBucket"
           },
-          "S3Key": "serverless/team-reveille-student-core/dev/1771210351452-2026-02-16T02:52:31.452Z/team-reveille-student-core.zip"
+          "S3Key": "serverless/team-reveille-student-core/dev/1771902350453-2026-02-24T03:05:50.453Z/team-reveille-student-core.zip"
         },
         "Handler": "src/handlers/resumes.downloadUrl",
         "Runtime": "nodejs20.x",
@@ -447,64 +447,64 @@
         "ResumesDownloadUrlLogGroup"
       ]
     },
-    "StudentProfilesCheckProfileExistsLambdaVersionJB6pRSEcUyC6hgHMdnJDEukYiyDqTypnlR3kQObJiI": {
+    "StudentProfilesCheckProfileExistsLambdaVersionVbvB2oo5hzaFNX4lxxXGVVoo4S0iRrsXErbb2saytE": {
       "Type": "AWS::Lambda::Version",
       "DeletionPolicy": "Retain",
       "Properties": {
         "FunctionName": {
           "Ref": "StudentProfilesCheckProfileExistsLambdaFunction"
         },
-        "CodeSha256": "KSsrf8G5wAaSQ6oKKxReTkFgeprC3e6Cc2t1SMEf2hI="
+        "CodeSha256": "uvQ9CO0eES9WgKI3AzhZ7r+YTzr0KiZ296mhNwmV5AE="
       }
     },
-    "StudentProfilesCrudLambdaVersiondi9ejSJWkzFaYOcmbW1Ev0Cf1L2ixMNEmfv1dC6w3g": {
+    "StudentProfilesCrudLambdaVersionMIt7bYFHE2qpD7UjHRMflVjkjV0f48qf5Kz4RVrGx8o": {
       "Type": "AWS::Lambda::Version",
       "DeletionPolicy": "Retain",
       "Properties": {
         "FunctionName": {
           "Ref": "StudentProfilesCrudLambdaFunction"
         },
-        "CodeSha256": "KSsrf8G5wAaSQ6oKKxReTkFgeprC3e6Cc2t1SMEf2hI="
+        "CodeSha256": "uvQ9CO0eES9WgKI3AzhZ7r+YTzr0KiZ296mhNwmV5AE="
       }
     },
-    "ResumesUploadUrlLambdaVersionXYQuoewmGOr0g747m8vJeE87ak661qQ3Vf2Q4bMVI": {
+    "ResumesUploadUrlLambdaVersionN22i4o3UXjkyQXbYCIALeDgdNFAmnR70G5Vj2cn2K9g": {
       "Type": "AWS::Lambda::Version",
       "DeletionPolicy": "Retain",
       "Properties": {
         "FunctionName": {
           "Ref": "ResumesUploadUrlLambdaFunction"
         },
-        "CodeSha256": "KSsrf8G5wAaSQ6oKKxReTkFgeprC3e6Cc2t1SMEf2hI="
+        "CodeSha256": "uvQ9CO0eES9WgKI3AzhZ7r+YTzr0KiZ296mhNwmV5AE="
       }
     },
-    "ResumesCompleteLambdaVersionG3DwRlrQkz7ZWjPBxwDtaUzdvVhM4kFs9PAc55b0o": {
+    "ResumesCompleteLambdaVersiongwiDppAtlkwJfeDgiEwEvErMo5gHaQSrkkOJKzVlXg": {
       "Type": "AWS::Lambda::Version",
       "DeletionPolicy": "Retain",
       "Properties": {
         "FunctionName": {
           "Ref": "ResumesCompleteLambdaFunction"
         },
-        "CodeSha256": "KSsrf8G5wAaSQ6oKKxReTkFgeprC3e6Cc2t1SMEf2hI="
+        "CodeSha256": "uvQ9CO0eES9WgKI3AzhZ7r+YTzr0KiZ296mhNwmV5AE="
       }
     },
-    "ResumesListLambdaVersiondR4nxdN9YM3b4lt9kQwafNtY2mhMy4j1EgpG9yHGrk8": {
+    "ResumesListLambdaVersionke1G0PfE7IhR9xApbYeiuzoV9mbynhjXpLxx9vk4": {
       "Type": "AWS::Lambda::Version",
       "DeletionPolicy": "Retain",
       "Properties": {
         "FunctionName": {
           "Ref": "ResumesListLambdaFunction"
         },
-        "CodeSha256": "KSsrf8G5wAaSQ6oKKxReTkFgeprC3e6Cc2t1SMEf2hI="
+        "CodeSha256": "uvQ9CO0eES9WgKI3AzhZ7r+YTzr0KiZ296mhNwmV5AE="
       }
     },
-    "ResumesDownloadUrlLambdaVersion32jgmAc6SnvQTzPkba3ytZVMqlziNKwqUosiVUjl1aY": {
+    "ResumesDownloadUrlLambdaVersionA26sCBNyjPJ36g9agEXWsZ0KUelpumJAjAAdCJfY": {
       "Type": "AWS::Lambda::Version",
       "DeletionPolicy": "Retain",
       "Properties": {
         "FunctionName": {
           "Ref": "ResumesDownloadUrlLambdaFunction"
         },
-        "CodeSha256": "KSsrf8G5wAaSQ6oKKxReTkFgeprC3e6Cc2t1SMEf2hI="
+        "CodeSha256": "uvQ9CO0eES9WgKI3AzhZ7r+YTzr0KiZ296mhNwmV5AE="
       }
     },
     "ApiGatewayRestApi": {
@@ -1441,7 +1441,7 @@
         "ResumesDownloadUrlLambdaPermissionApiGateway"
       ]
     },
-    "ApiGatewayDeployment1771210335436": {
+    "ApiGatewayDeployment1771902344141": {
       "Type": "AWS::ApiGateway::Deployment",
       "Properties": {
         "RestApiId": {
@@ -1823,7 +1823,7 @@
     "StudentProfilesCheckProfileExistsLambdaFunctionQualifiedArn": {
       "Description": "Current Lambda function version",
       "Value": {
-        "Ref": "StudentProfilesCheckProfileExistsLambdaVersionJB6pRSEcUyC6hgHMdnJDEukYiyDqTypnlR3kQObJiI"
+        "Ref": "StudentProfilesCheckProfileExistsLambdaVersionVbvB2oo5hzaFNX4lxxXGVVoo4S0iRrsXErbb2saytE"
       },
       "Export": {
         "Name": "sls-team-reveille-student-core-dev-StudentProfilesCheckProfileExistsLambdaFunctionQualifiedArn"
@@ -1832,7 +1832,7 @@
     "StudentProfilesCrudLambdaFunctionQualifiedArn": {
       "Description": "Current Lambda function version",
       "Value": {
-        "Ref": "StudentProfilesCrudLambdaVersiondi9ejSJWkzFaYOcmbW1Ev0Cf1L2ixMNEmfv1dC6w3g"
+        "Ref": "StudentProfilesCrudLambdaVersionMIt7bYFHE2qpD7UjHRMflVjkjV0f48qf5Kz4RVrGx8o"
       },
       "Export": {
         "Name": "sls-team-reveille-student-core-dev-StudentProfilesCrudLambdaFunctionQualifiedArn"
@@ -1841,7 +1841,7 @@
     "ResumesUploadUrlLambdaFunctionQualifiedArn": {
       "Description": "Current Lambda function version",
       "Value": {
-        "Ref": "ResumesUploadUrlLambdaVersionXYQuoewmGOr0g747m8vJeE87ak661qQ3Vf2Q4bMVI"
+        "Ref": "ResumesUploadUrlLambdaVersionN22i4o3UXjkyQXbYCIALeDgdNFAmnR70G5Vj2cn2K9g"
       },
       "Export": {
         "Name": "sls-team-reveille-student-core-dev-ResumesUploadUrlLambdaFunctionQualifiedArn"
@@ -1850,7 +1850,7 @@
     "ResumesCompleteLambdaFunctionQualifiedArn": {
       "Description": "Current Lambda function version",
       "Value": {
-        "Ref": "ResumesCompleteLambdaVersionG3DwRlrQkz7ZWjPBxwDtaUzdvVhM4kFs9PAc55b0o"
+        "Ref": "ResumesCompleteLambdaVersiongwiDppAtlkwJfeDgiEwEvErMo5gHaQSrkkOJKzVlXg"
       },
       "Export": {
         "Name": "sls-team-reveille-student-core-dev-ResumesCompleteLambdaFunctionQualifiedArn"
@@ -1859,7 +1859,7 @@
     "ResumesListLambdaFunctionQualifiedArn": {
       "Description": "Current Lambda function version",
       "Value": {
-        "Ref": "ResumesListLambdaVersiondR4nxdN9YM3b4lt9kQwafNtY2mhMy4j1EgpG9yHGrk8"
+        "Ref": "ResumesListLambdaVersionke1G0PfE7IhR9xApbYeiuzoV9mbynhjXpLxx9vk4"
       },
       "Export": {
         "Name": "sls-team-reveille-student-core-dev-ResumesListLambdaFunctionQualifiedArn"
@@ -1868,7 +1868,7 @@
     "ResumesDownloadUrlLambdaFunctionQualifiedArn": {
       "Description": "Current Lambda function version",
       "Value": {
-        "Ref": "ResumesDownloadUrlLambdaVersion32jgmAc6SnvQTzPkba3ytZVMqlziNKwqUosiVUjl1aY"
+        "Ref": "ResumesDownloadUrlLambdaVersionA26sCBNyjPJ36g9agEXWsZ0KUelpumJAjAAdCJfY"
       },
       "Export": {
         "Name": "sls-team-reveille-student-core-dev-ResumesDownloadUrlLambdaFunctionQualifiedArn"

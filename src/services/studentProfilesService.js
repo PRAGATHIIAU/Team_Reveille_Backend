@@ -26,7 +26,7 @@ function getTableName() {
 }
 
 /**
- * Profile schema: name, uin, degree, major, gradDate (graduation month-year), linkedInUrl, resumeS3Key (resume reference)
+ * Profile schema: name, uin, email, degree, major, gradDate (graduation month-year), linkedInUrl, resumeS3Key (resume reference)
  */
 
 async function getByUserId(userId) {
@@ -50,6 +50,7 @@ async function create(userId, profile) {
     userId,
     name: profile.name,
     uin: profile.uin,
+    email: profile.email ?? null,
     degree: profile.degree ?? null,
     major: profile.major,
     gradDate: profile.gradDate,
@@ -74,7 +75,7 @@ async function update(userId, profile) {
   const exprNames = {};
   const exprValues = { ":updatedAt": now };
 
-  const allowed = ["name", "uin", "degree", "major", "gradDate", "linkedInUrl", "resumeS3Key"];
+  const allowed = ["name", "uin", "email", "degree", "major", "gradDate", "linkedInUrl", "resumeS3Key"];
   for (const key of allowed) {
     if (profile[key] !== undefined) {
       const nameKey = `#${key}`;
@@ -115,7 +116,7 @@ async function remove(userId) {
 
 /**
  * List all student profiles except the given userId (for Students Connect).
- * Returns only public fields: name, uin, degree, major, gradDate, linkedInUrl.
+ * Returns only public fields: name, uin, email, degree, major, gradDate, linkedInUrl.
  */
 async function listAllExceptUserId(excludeUserId) {
   const result = await docClient.send(
@@ -129,6 +130,7 @@ async function listAllExceptUserId(excludeUserId) {
   return items.map((item) => ({
     name: item.name,
     uin: item.uin,
+    email: item.email ?? null,
     degree: item.degree ?? null,
     major: item.major,
     gradDate: item.gradDate,

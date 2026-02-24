@@ -6,6 +6,7 @@
 
 const { requireAuth } = require("../lib/jwt");
 const studentProfilesService = require("../services/studentProfilesService");
+const resumesService = require("../services/resumesService");
 
 function jsonResponse(statusCode, body) {
   return {
@@ -65,6 +66,16 @@ async function crud(event) {
 
     if (method === "POST" && path.includes("/profiles") && !pathIncludesMe) {
       const body = JSON.parse(event.body ?? "{}");
+      // If no resumeS3Key provided, attach the user's uploaded resume if they have one (e.g. uploaded before creating profile)
+      if (!body.resumeS3Key) {
+        const resumes = await resumesService.listByUser(userId);
+        const uploaded = resumes
+          .filter((r) => r.status === "UPLOADED")
+          .sort((a, b) => (b.updatedAt || "").localeCompare(a.updatedAt || ""));
+        if (uploaded.length > 0) {
+          body.resumeS3Key = uploaded[0].s3Key;
+        }
+      }
       const profile = await studentProfilesService.create(userId, body);
       return jsonResponse(201, profile);
     }
